@@ -1,0 +1,31 @@
+# Enhanced Channel Watch Configuration
+# Edit values below to customize your setup
+
+channel_url: "https://www.youtube.com/@timmaythetoolan"
+windows: 20
+base_port: 9333
+profile_base: "./profiles"
+
+# Proxy configuration (add your proxies here)
+proxy_list: []
+# Example:
+# proxy_list:
+#   - "http://user:pass@proxy1:port"
+#   - "socks5://user:pass@proxy2:port"
+
+# Video watching configuration
+rotate_video_every: [180, 320]  # Min, Max seconds
+max_videos: 25
+min_video_duration: 60     # Skip videos shorter than this (seconds)
+max_video_duration: 3600   # Skip videos longer than this (seconds)
+
+# Resource thresholds
+cpu_threshold: 85
+ram_threshold: 85
+
+# Engagement settings
+engagement_rate: 0.3  # 30% chance of engagement actions (likes, comments)
+
+# Monitoring and logging
+statistics_enabled: true
+log_level: "INFO"  # DEBUG, INFO, WARNING, ERROR
