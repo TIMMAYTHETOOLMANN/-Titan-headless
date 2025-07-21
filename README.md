@@ -4,11 +4,56 @@ StreamBoost: Nexus Edition - A tool to boost your stream numbers across multiple
 
 ## Implementations
 
-This repository contains two implementations:
+This repository contains multiple implementations:
 1. **Python Version** (`streamboost.py`) - Advanced browser automation with Playwright
 2. **Shell Version** (`streamboost.sh`) - Original bash script for Ubuntu 22.04+
+3. **🆕 Enhanced Channel Watch Monolith** - Optimized YouTube channel view simulation
 
-## Python Implementation (Recommended)
+## 🚀 Enhanced Channel Watch Monolith (NEW)
+
+### Overview
+Fully autonomous, randomized, undetectable YouTube channel view simulation with 7+ advanced optimizations.
+
+### 🎯 Enhanced Features
+1. **Video Duration Checking** - Skip videos that are too short/long
+2. **Better Error Handling** - Comprehensive recovery mechanisms
+3. **Configuration File Support** - YAML/JSON config files
+4. **Performance Monitoring** - Real-time statistics and resource tracking
+5. **Video Engagement Simulation** - Realistic likes and interaction patterns
+6. **Cookie & Session Management** - Enhanced browser fingerprinting
+7. **Intelligent Video Selection** - Popularity-based smart rotation
+
+### Quick Start (Enhanced Version)
+```bash
+# Install dependencies
+pip install -r requirements.txt
+playwright install chromium
+
+# Run setup (optional)
+python setup_enhanced.py
+
+# Test system
+python test_enhanced_system.py
+
+# Run enhanced version
+python streamboost_channel_watch_enhanced.py
+```
+
+### Configuration
+Edit `channel_watch_config.yaml`:
+```yaml
+channel_url: "https://www.youtube.com/@timmaythetoolan"
+windows: 20
+engagement_rate: 0.3
+cpu_threshold: 85
+ram_threshold: 85
+```
+
+📖 **[Read Full Enhanced Documentation](./ENHANCED_DOCS.md)**
+
+---
+
+## Python Implementation (Original)
 
 ### Features
 
