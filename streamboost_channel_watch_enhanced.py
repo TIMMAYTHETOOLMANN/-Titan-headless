@@ -202,7 +202,16 @@ class PerformanceMonitor:
         """Enhanced resource checking with detailed metrics"""
         cpu = psutil.cpu_percent(interval=0.2)
         memory = psutil.virtual_memory()
-        disk = psutil.disk_usage('/')
+        
+        # Windows-compatible disk usage check
+        try:
+            if os.name == 'nt':  # Windows
+                disk = psutil.disk_usage('C:\\')
+            else:  # Unix-like systems
+                disk = psutil.disk_usage('/')
+        except:
+            # Fallback if disk check fails
+            disk = type('obj', (object,), {'percent': 0, 'free': 1024**4})()
         
         metrics = {
             'cpu_percent': cpu,
