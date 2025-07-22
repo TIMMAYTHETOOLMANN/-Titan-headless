@@ -166,7 +166,7 @@ class ConfigManager:
     
     @staticmethod
     def load_config(config_path: str = 'channel_watch_config.yaml') -> ChannelWatchConfig:
-        """Load configuration from file"""
+        """Load configuration from file, ignoring unknown keys and ensuring cross-platform compatibility"""
         try:
             if os.path.exists(config_path):
                 with open(config_path, 'r') as f:
@@ -174,7 +174,13 @@ class ConfigManager:
                         data = json.load(f)
                     else:
                         data = yaml.safe_load(f)
-                return ChannelWatchConfig(**data)
+                # Only pass known keys to ChannelWatchConfig
+                valid_keys = ChannelWatchConfig.__dataclass_fields__.keys()
+                filtered_data = {k: v for k, v in data.items() if k in valid_keys}
+                # Convert rotate_video_every to tuple if it's a list (for YAML/Linux compatibility)
+                if 'rotate_video_every' in filtered_data and isinstance(filtered_data['rotate_video_every'], list):
+                    filtered_data['rotate_video_every'] = tuple(filtered_data['rotate_video_every'])
+                return ChannelWatchConfig(**filtered_data)
         except Exception as e:
             print(f"Error loading config: {e}, using defaults")
         return ChannelWatchConfig()
@@ -249,38 +255,43 @@ class EnhancedVideoScraper:
         })
     
     def get_channel_videos(self, channel_url: str, max_videos: int = 20) -> List[VideoInfo]:
-        """Enhanced video scraping with metadata extraction"""
+        """Enhanced video scraping with robust error handling and fallback"""
         try:
             videos_url = f"{channel_url}/videos"
             self.logger.info(f"Scraping videos from {videos_url}")
-            
             response = self.session.get(videos_url)
+            if response.status_code == 404:
+                self.logger.error(f"404 Not Found for {videos_url}. Check channel URL or channel privacy settings.")
+                return []
             response.raise_for_status()
-            
             soup = BeautifulSoup(response.text, 'html.parser')
             video_infos = []
-            
-            for link in soup.find_all('a'):
-                href = link.get('href', '')
+            # Try to find video links using multiple strategies for resilience
+            for link in soup.find_all('a', href=True):
+                href = link['href']
                 if href.startswith('/watch?v=') and 'list=' not in href:
                     video_url = 'https://www.youtube.com' + href
-                    
-                    # Extract additional metadata if available
                     video_info = VideoInfo(url=video_url)
-                    
                     # Try to extract title
-                    title_elem = link.find('span', {'id': 'video-title'})
-                    if title_elem:
-                        video_info.title = title_elem.get_text(strip=True)
-                    
+                    if link.has_attr('title'):
+                        video_info.title = link['title']
+                    elif link.text:
+                        video_info.title = link.text.strip()
                     video_infos.append(video_info)
-                    
                     if len(video_infos) >= max_videos:
                         break
-            
+            # Fallback: try to find video links in script tags if none found
+            if not video_infos:
+                for script in soup.find_all('script'):
+                    if 'watch?v=' in script.text:
+                        for part in script.text.split('"'):
+                            if part.startswith('/watch?v='):
+                                video_url = 'https://www.youtube.com' + part
+                                video_infos.append(VideoInfo(url=video_url))
+                                if len(video_infos) >= max_videos:
+                                    break
             self.logger.info(f"Scraped {len(video_infos)} videos from channel")
             return video_infos
-            
         except Exception as e:
             self.logger.error(f"Failed to scrape channel videos: {e}")
             return []

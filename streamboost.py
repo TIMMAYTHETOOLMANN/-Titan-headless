@@ -18,14 +18,16 @@ from typing import List, Tuple, Optional, Dict
 from playwright.async_api import async_playwright, Browser, Page, BrowserContext
 from playwright_stealth import Stealth
 from cpuinfo import get_cpu_info
+import subprocess
+import platform
 
 # === CONFIGURATION ===
 class Config:
     # Platform Configuration
     TARGET_ACCOUNT = "timmaythetoolman"
-    YOUTUBE_WINDOWS = 10
-    KICK_WINDOWS = 11
-    TWITCH_WINDOWS = 15
+    YOUTUBE_WINDOWS = 1
+    KICK_WINDOWS = 1
+    TWITCH_WINDOWS = 1
 
     # Port and Profile Configuration
     BASE_PORT = 9223
@@ -134,12 +136,25 @@ class StreamWindow:
         self.is_running = False
 
     async def launch(self, playwright) -> bool:
-        """Launch browser instance with stealth configuration"""
+        """Launch browser instance with stealth configuration and advanced anti-detection"""
         try:
-            # Ensure profile directory exists
+            # Headless Ubuntu Xvfb setup
+            win_width = random.randint(1100, 1920)
+            win_height = random.randint(700, 1080)
+            device_scale = random.choice([1, 1.25, 1.5, 2])
+            color_depth = random.choice([24, 30, 32])
+            pixel_ratio = random.choice([1, 1.25, 1.5, 2])
+            orientation = random.choice(['landscape', 'portrait'])
+            if platform.system() == "Linux" and os.environ.get("DISPLAY") is None:
+                xvfb_cmd = ["Xvfb", ":99", "-screen", "0", f"{win_width}x{win_height}x{color_depth}"]
+                try:
+                    subprocess.Popen(xvfb_cmd)
+                    os.environ["DISPLAY"] = ":99"
+                    logger.info("[Xvfb] Virtual display started on :99")
+                except Exception as xvfb_err:
+                    logger.error(f"[Xvfb] Failed to start: {xvfb_err}")
+                    return False
             self.profile_dir.mkdir(parents=True, exist_ok=True)
-
-            # Browser launch arguments
             args = [
                 f'--remote-debugging-port={self.port}',
                 '--disable-blink-features=AutomationControlled',
@@ -155,46 +170,99 @@ class StreamWindow:
                 '--no-first-run',
                 '--no-default-browser-check',
                 '--disable-default-apps',
-                f'--window-size={Config.WINDOW_WIDTH},{Config.WINDOW_HEIGHT}',
+                f'--window-size={win_width},{win_height}',
+                '--force-device-scale-factor=' + str(device_scale),
                 '--disable-web-security',
-                '--disable-features=VizDisplayCompositor'
+                '--disable-features=VizDisplayCompositor',
+                '--disable-gpu',
+                '--disable-software-rasterizer',
+                '--disable-popup-blocking',
+                '--disable-site-isolation-trials',
+                '--disable-logging',
+                '--disable-notifications',
+                '--disable-background-fetch',
+                '--disable-sync',
+                '--disable-translate',
+                '--disable-client-side-phishing-detection',
+                '--disable-component-update',
+                '--disable-domain-reliability',
+                '--disable-hang-monitor',
+                '--disable-prompt-on-repost',
+                '--disable-webgl',
+                '--disable-webgl2',
+                '--disable-features=IsolateOrigins,site-per-process',
+                '--disable-blink-features',
+                '--disable-automation',
+                '--disable-dev-tools',
+                '--disable-crash-reporter',
+                '--disable-background-media-suspend',
+                '--disable-breakpad',
+                '--disable-canvas-aa',
+                '--disable-gesture-requirement-for-media-playback',
+                '--disable-ipc-flooding-protection',
+                '--disable-offer-store-unmasked-wallet-cards',
+                '--disable-offline-auto-reload',
+                '--disable-offline-load-stale-cache',
+                '--disable-password-generation',
+                '--disable-permissions-api',
+                '--disable-print-preview',
+                '--disable-prompt-on-repost',
+                '--disable-renderer-accessibility',
+                '--disable-search-geolocation-disclosure',
+                '--disable-speech-api',
+                '--disable-tab-for-desktop-share',
+                '--disable-translate-new-ux',
+                '--disable-usb',
+                '--disable-web-authentication',
+                '--disable-web-share',
+                '--disable-xss-auditor',
             ]
-
-            # Browser context configuration
             context_options = {
                 'user_data_dir': str(self.profile_dir),
                 'args': args,
                 'headless': Config.HEADLESS,
                 'locale': self.language,
                 'timezone_id': self.timezone,
-                'viewport': {'width': Config.WINDOW_WIDTH, 'height': Config.WINDOW_HEIGHT}
+                'viewport': {'width': win_width, 'height': win_height},
+                'device_scale_factor': device_scale,
             }
-
-            # Add proxy if available
             if self.proxy:
                 context_options['proxy'] = {'server': self.proxy}
-
-            # Launch persistent context
             self.browser = await playwright.chromium.launch_persistent_context(**context_options)
-
-            # Create new page and apply stealth
             self.page = await self.browser.new_page()
             stealth_instance = Stealth()
             await stealth_instance.apply_stealth_async(self.page)
-
-            # Set user agent via extra HTTP headers
-            await self.page.set_extra_http_headers({
-                'User-Agent': self.user_agent
-            })
-
-            # Navigate to target URL
+            # --- Advanced Fingerprint Spoofing ---
+            async def spoof_all(page):
+                await page.add_init_script('''
+                    Object.defineProperty(navigator, 'webdriver', {get: () => false});
+                    Object.defineProperty(navigator, 'platform', {get: () => 'Win32'});
+                    Object.defineProperty(navigator, 'hardwareConcurrency', {get: () => 4 + Math.floor(Math.random()*4)});
+                    Object.defineProperty(navigator, 'maxTouchPoints', {get: () => 1});
+                    Object.defineProperty(navigator, 'deviceMemory', {get: () => 4 + Math.floor(Math.random()*4)});
+                    Object.defineProperty(navigator, 'languages', {get: () => ['en-US','en','fr','de']});
+                    Object.defineProperty(navigator, 'plugins', {get: () => [1,2,3,4,5]});
+                    Object.defineProperty(navigator, 'mediaDevices', {get: () => ({enumerateDevices: () => [{kind:'videoinput'}]})});
+                    Object.defineProperty(window, 'devicePixelRatio', {get: () => %f});
+                    Object.defineProperty(screen, 'orientation', {get: () => ({type: '%s'})});
+                    Object.defineProperty(screen, 'colorDepth', {get: () => %d});
+                    Object.defineProperty(document, 'fonts', {get: () => ['Arial','Verdana','Times New Roman']});
+                    const toDataURL = HTMLCanvasElement.prototype.toDataURL;
+                    HTMLCanvasElement.prototype.toDataURL = function() { return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA"; };
+                    Object.defineProperty(window, 'AudioContext', {get: () => function(){}});
+                ''' % (pixel_ratio, orientation, color_depth))
+                # Randomize localStorage/sessionStorage/IndexedDB
+                await page.add_init_script('''
+                    window.localStorage.setItem('session', Math.random().toString(36).substring(2));
+                    window.sessionStorage.setItem('session', Math.random().toString(36).substring(2));
+                ''')
+            await spoof_all(self.page)
+            await self.page.set_extra_http_headers({'User-Agent': self.user_agent})
             await self.page.goto(self.url, wait_until='domcontentloaded', timeout=30000)
             await self.human_emulation()
-
             self.is_running = True
             logger.info(f"✓ {self.platform} window launched - Port: {self.port} | Profile: {self.profile_dir.name}")
             return True
-
         except Exception as e:
             logger.error(f"✗ Failed to launch {self.platform} on port {self.port}: {str(e)}")
             return False
