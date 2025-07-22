@@ -1,0 +1,90 @@
+# Titan Headless - Unified Deployment Configuration
+# Supports both Live Stream and Static Video deployments
+
+# Deployment Mode Selection
+deployment_mode: "static_video"  # Options: "live_stream", "static_video", "both"
+
+# === LIVE STREAM DEPLOYMENT CONFIGURATION ===
+live_stream:
+  # Target account for live streams
+  target_account: "timmaythetoolman"
+  
+  # Platform Configuration
+  platforms:
+    youtube:
+      enabled: true
+      windows: 10
+      url_template: "https://www.youtube.com/@{account}/live"
+    kick:
+      enabled: true  
+      windows: 11
+      url_template: "https://www.kick.com/{account}"
+    twitch:
+      enabled: true
+      windows: 15
+      url_template: "https://www.twitch.tv/{account}"
+  
+  # Live Stream Specific Settings
+  live_detection:
+    check_interval: 30  # seconds to check if stream is live
+    fallback_to_videos: true  # fallback to regular videos if no live stream
+    max_wait_time: 300  # max seconds to wait for live stream
+
+# === STATIC VIDEO DEPLOYMENT CONFIGURATION ===
+static_video:
+  # Target channel for static video viewing
+  channel_url: "https://www.youtube.com/@timmaythetoolan"
+  windows: 20
+  
+  # Video Selection Settings
+  video_selection:
+    max_videos: 25
+    min_video_duration: 60     # Skip videos shorter than this (seconds)
+    max_video_duration: 3600   # Skip videos longer than this (seconds)
+    rotate_video_every: [180, 320]  # Min, Max seconds
+    prefer_popular: true  # Prefer videos with higher view counts
+  
+  # Engagement Simulation
+  engagement:
+    enabled: true
+    rate: 0.3  # 30% chance of engagement actions
+    actions: ["like", "comment", "subscribe"]
+
+# === SHARED CONFIGURATION ===
+shared:
+  # Browser Configuration
+  browser:
+    base_port: 9333
+    profile_base: "./profiles"
+    window_width: 1280
+    window_height: 800
+    headless: false
+    
+  # Resource Management
+  resources:
+    cpu_threshold: 85
+    ram_threshold: 85
+    spawn_delay: [2, 7]  # Min, Max seconds between launches
+    
+  # Proxy Configuration
+  proxy:
+    enabled: false
+    proxy_list: []
+    # Example:
+    # proxy_list:
+    #   - "http://user:pass@proxy1:port"
+    #   - "socks5://user:pass@proxy2:port"
+    
+  # Monitoring and Logging
+  monitoring:
+    statistics_enabled: true
+    log_level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+    performance_monitoring: true
+    health_check_interval: 60  # seconds
+    
+  # Stealth Configuration
+  stealth:
+    user_agent_rotation: true
+    timezone_randomization: true
+    language_randomization: true
+    human_emulation: true

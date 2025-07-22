@@ -1,0 +1,48 @@
+deployment_mode: static_video
+live_stream:
+  live_detection:
+    check_interval: 30
+    fallback_to_videos: true
+    max_wait_time: 300
+  platforms:
+    kick:
+      enabled: true
+      url_template: https://www.kick.com/{account}
+      windows: 11
+    twitch:
+      enabled: true
+      url_template: https://www.twitch.tv/{account}
+      windows: 15
+    youtube:
+      enabled: true
+      url_template: https://www.youtube.com/@{account}/live
+      windows: 10
+  target_account: timmaythetoolman
+shared:
+  browser:
+    base_port: 9333
+    headless: false
+    profile_base: ./profiles
+    window_height: 800
+    window_width: 1280
+  monitoring:
+    log_level: INFO
+    statistics_enabled: true
+  proxy:
+    proxy_list: []
+  resources:
+    cpu_threshold: 85
+    ram_threshold: 85
+static_video:
+  channel_url: https://www.youtube.com/@timmaythetoolan
+  engagement:
+    rate: 0.3
+  video_selection:
+    max_video_duration: 3600
+    max_videos: 25
+    min_video_duration: 60
+    prefer_popular: true
+    rotate_video_every:
+    - 180
+    - 320
+  windows: 20
