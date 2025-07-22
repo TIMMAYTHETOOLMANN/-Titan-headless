@@ -2,6 +2,98 @@
 
 StreamBoost: Nexus Edition - A tool to boost your stream numbers across multiple platforms.
 
+## 🆕 Titan Headless v2.0 - Unified Deployment System
+
+**NEW: Two Separate Deployment Capabilities**
+
+The system now provides **two independent deployment capabilities** that can be used separately or together:
+
+### 1. 🔴 Live Stream Deployment
+- **Multi-platform live streaming** (YouTube Live, Kick, Twitch)
+- **Real-time live detection** with automatic fallback
+- **Production-ready monitoring** and health checks
+- **Independent deployment** from static video system
+
+### 2. 🎬 Static Video Deployment  
+- **YouTube video watching** with intelligent selection
+- **Advanced engagement simulation** (likes, comments, subscribes)
+- **Duration filtering** and popularity-based selection
+- **Modular design** separate from live streaming
+
+### 3. 🚀 Quick Start - New Deployment System
+
+```bash
+# Option 1: Use launcher scripts (Recommended)
+./launch_live_stream.sh      # For live streams
+./launch_static_video.sh     # For static videos
+
+# Option 2: Use unified deployment script
+python3 titan_deployment.py --mode live_stream    # Live streams only
+python3 titan_deployment.py --mode static_video   # Static videos only  
+python3 titan_deployment.py --mode both          # Both simultaneously
+
+# Option 3: Use individual modules directly
+python3 live_stream_deployment.py     # Direct live stream deployment
+python3 static_video_deployment.py    # Direct static video deployment
+```
+
+### 4. 📋 Installation & Setup
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Install browser
+python -m playwright install chromium
+
+# Create configuration files
+python3 titan_deployment.py --create-configs
+
+# Validate setup
+python3 titan_deployment.py --validate-only
+
+# Run comprehensive tests
+python3 test_deployment_system.py
+```
+
+### 5. ⚙️ Configuration
+
+The new system uses a unified YAML configuration (`deployment_config.yaml`) supporting both deployment types:
+
+```yaml
+# Select deployment mode
+deployment_mode: "live_stream"  # Options: "live_stream", "static_video", "both"
+
+# Live stream configuration
+live_stream:
+  target_account: "timmaythetoolman"
+  platforms:
+    youtube:
+      enabled: true
+      windows: 10
+      url_template: "https://www.youtube.com/@{account}/live"
+    kick:
+      enabled: true
+      windows: 11
+    twitch:
+      enabled: true  
+      windows: 15
+
+# Static video configuration
+static_video:
+  channel_url: "https://www.youtube.com/@timmaythetoolan"
+  windows: 20
+  video_selection:
+    max_videos: 25
+    min_video_duration: 60
+    max_video_duration: 3600
+    engagement_rate: 0.3
+```
+
+📖 **[Read Full Deployment Documentation](./DEPLOYMENT_DOCS.md)**
+
+---
+
 ## Implementations
 
 This repository contains multiple implementations:
