@@ -1,12 +1,12 @@
 # 🚀 Titan Headless - Single-Click Stream Boost Suite
 
-**Ubuntu 22.04+ Optimized | True Single-Click Deployment**
+**Ubuntu 22.04+ Optimized | True Single-Click Deployment | 🆕 Headless Operation Support**
 
-StreamBoost: Nexus Edition + Enhanced YouTube Watcher - Automated stream boosting with **zero manual configuration**.
+StreamBoost: Nexus Edition + Enhanced YouTube Watcher - Automated stream boosting with **zero manual configuration** and **full headless Ubuntu support**.
 
-## ⚡ Single-Click Deployment (NEW!)
+## ⚡ Single-Click Deployment (Headless & GUI Support)
 
-**Deploy everything with one command:**
+**Deploy everything with one command (works in headless environments):**
 ```bash
 ./deploy_master.sh --auto
 ```
@@ -20,9 +20,40 @@ StreamBoost: Nexus Edition + Enhanced YouTube Watcher - Automated stream boostin
 ✅ **System dependency installation**  
 ✅ **Browser setup & configuration**  
 ✅ **Ubuntu 22.04+ optimization**  
+✅ **🆕 Headless operation with Xvfb virtual display**  
 ✅ **Zero manual steps required**
 
 📖 **[Complete Deployment Guide](./DEPLOYMENT_GUIDE.md)**
+
+---
+
+## 🎯 Headless Operation (New!)
+
+StreamBoost now supports complete headless operation on Ubuntu servers without GUI:
+
+### Features
+- **Automatic Xvfb Setup**: Virtual display automatically configured
+- **No GUI Required**: Runs on headless Ubuntu 22.04+ servers
+- **All Functionality Preserved**: Full feature compatibility in headless mode
+- **Zero Configuration**: Headless mode enabled by default
+
+### Quick Headless Start
+```bash
+# Works on headless Ubuntu servers
+./deploy_streamboost.sh
+
+# Or directly run streamboost
+python3 streamboost.py
+
+# Test headless functionality
+python3 test_headless.py
+```
+
+### Headless Requirements
+- Ubuntu 22.04+ (headless server)
+- Python 3.8+
+- Xvfb (automatically installed)
+- 4GB+ RAM recommended
 
 ---
 
@@ -124,6 +155,7 @@ class Config:
     YOUTUBE_WINDOWS = 10
     KICK_WINDOWS = 11
     TWITCH_WINDOWS = 15
+    HEADLESS = True  # Default: True for Ubuntu compatibility
     # Add your proxies here:
     PROXY_LIST = [
         'http://user:pass@proxy1:port',
@@ -131,12 +163,33 @@ class Config:
     ]
 ```
 
+### Headless Configuration
+- `HEADLESS = True`: Enables headless browser operation (default)
+- Automatic Xvfb virtual display setup on Linux systems
+- No GUI session required for operation
+
 ### Requirements
 
 - Python 3.8+
 - 4GB+ RAM recommended for multiple windows
 - Internet connection
+- Ubuntu 22.04+ (supports both GUI and headless operation)
 - Optional: Proxy servers for enhanced anonymity
+
+### Testing Headless Operation
+
+Validate headless functionality with included test suites:
+
+```bash
+# Test headless system components
+python3 test_headless.py
+
+# Test StreamBoost headless initialization
+python3 test_streamboost_headless.py
+
+# Test full enhanced system
+python3 test_enhanced_system.py
+```
 
 ## StreamBoost Script (Shell Version)
 
