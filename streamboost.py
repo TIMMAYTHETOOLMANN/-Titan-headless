@@ -46,7 +46,7 @@ class Config:
     # Browser Configuration
     WINDOW_WIDTH = 1280
     WINDOW_HEIGHT = 800
-    HEADLESS = False
+    HEADLESS = True  # Default to headless mode for Ubuntu compatibility
 
     # Proxy Configuration (Add your proxies here)
     PROXY_LIST = [
@@ -138,22 +138,32 @@ class StreamWindow:
     async def launch(self, playwright) -> bool:
         """Launch browser instance with stealth configuration and advanced anti-detection"""
         try:
-            # Headless Ubuntu Xvfb setup
+            # Headless Ubuntu Xvfb setup - improved virtual display handling
             win_width = random.randint(1100, 1920)
             win_height = random.randint(700, 1080)
             device_scale = random.choice([1, 1.25, 1.5, 2])
             color_depth = random.choice([24, 30, 32])
             pixel_ratio = random.choice([1, 1.25, 1.5, 2])
             orientation = random.choice(['landscape', 'portrait'])
-            if platform.system() == "Linux" and os.environ.get("DISPLAY") is None:
-                xvfb_cmd = ["Xvfb", ":99", "-screen", "0", f"{win_width}x{win_height}x{color_depth}"]
-                try:
-                    subprocess.Popen(xvfb_cmd)
-                    os.environ["DISPLAY"] = ":99"
-                    logger.info("[Xvfb] Virtual display started on :99")
-                except Exception as xvfb_err:
-                    logger.error(f"[Xvfb] Failed to start: {xvfb_err}")
-                    return False
+            
+            # Enhanced headless mode setup for Ubuntu
+            if platform.system() == "Linux":
+                if os.environ.get("DISPLAY") is None or Config.HEADLESS:
+                    # Ensure virtual display is available
+                    display_num = os.environ.get("DISPLAY", ":99").replace(":", "")
+                    xvfb_cmd = ["Xvfb", f":{display_num}", "-screen", "0", f"{win_width}x{win_height}x{color_depth}", "-ac", "+extension", "GLX"]
+                    try:
+                        # Check if Xvfb is already running on this display
+                        existing_xvfb = subprocess.run(["pgrep", "-f", f"Xvfb.*:{display_num}"], 
+                                                     capture_output=True, text=True)
+                        if not existing_xvfb.stdout.strip():
+                            subprocess.Popen(xvfb_cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                            time.sleep(1)  # Give Xvfb time to start
+                        os.environ["DISPLAY"] = f":{display_num}"
+                        logger.info(f"[Xvfb] Virtual display configured on :{display_num}")
+                    except Exception as xvfb_err:
+                        logger.warning(f"[Xvfb] Setup warning: {xvfb_err} - Continuing with headless mode")
+                        # Continue anyway, as Chrome can run headless without Xvfb
             self.profile_dir.mkdir(parents=True, exist_ok=True)
             args = [
                 f'--remote-debugging-port={self.port}',

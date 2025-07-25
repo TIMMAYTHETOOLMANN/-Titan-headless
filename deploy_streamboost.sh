@@ -52,16 +52,20 @@ function check_system() {
         fi
     fi
     
-    # Check if running in GUI session
+    # Check if running in GUI session or headless mode
     if [ -z "$DISPLAY" ]; then
-        log_error "No display found. StreamBoost requires a GUI session."
-        exit 1
-    fi
-    
-    # Check for X11/Xorg
-    if ! pgrep -x "Xorg" >/dev/null && ! pgrep -x "Xwayland" >/dev/null; then
-        log_error "No X11/Xorg session detected. StreamBoost requires a graphical environment."
-        exit 1
+        log_warning "No display found. StreamBoost will run in headless mode with virtual display."
+        # Install Xvfb for virtual display if not present
+        if ! command -v Xvfb &> /dev/null; then
+            log "Installing Xvfb for virtual display support..."
+            sudo apt install -y xvfb
+        fi
+    else
+        log "Display found: $DISPLAY"
+        # Check for X11/Xorg only if DISPLAY is set
+        if ! pgrep -x "Xorg" >/dev/null && ! pgrep -x "Xwayland" >/dev/null; then
+            log_warning "No X11/Xorg session detected, but DISPLAY is set. Will attempt to use virtual display."
+        fi
     fi
     
     log "✅ System requirements check passed"
@@ -84,7 +88,8 @@ function install_system_dependencies() {
         wget \
         ca-certificates \
         gnupg \
-        lsb-release
+        lsb-release \
+        xvfb
     
     # Install additional browsers if needed
     if ! command -v chromium-browser &> /dev/null && ! command -v chromium &> /dev/null; then
@@ -233,11 +238,11 @@ if [[ "$1" == "--help" ]] || [[ "$1" == "-h" ]]; then
     echo "StreamBoost Single-Click Deployment Script"
     echo ""
     echo "This script will:"
-    echo "  1. Check system requirements (Ubuntu 22.04+, GUI session)"
-    echo "  2. Install system dependencies (browsers, Python packages)"
+    echo "  1. Check system requirements (Ubuntu 22.04+, supports headless)"
+    echo "  2. Install system dependencies (browsers, Python packages, Xvfb)"
     echo "  3. Create isolated virtual environment"
     echo "  4. Install Python dependencies"
-    echo "  5. Configure and launch StreamBoost"
+    echo "  5. Configure and launch StreamBoost (headless or GUI)"
     echo ""
     echo "Usage:"
     echo "  ./deploy_streamboost.sh     # Full deployment and launch"

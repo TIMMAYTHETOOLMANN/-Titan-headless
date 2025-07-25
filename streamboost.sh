@@ -50,9 +50,29 @@ function ensure_browser_installed {
 }
 
 function check_xorg {
-    if ! pgrep -x "Xorg" >/dev/null; then
-        log "No Xorg session detected. You must run this inside a GUI/X11 session."
-        exit 1
+    if [ -z "$DISPLAY" ]; then
+        log "No display found. Setting up virtual display with Xvfb..."
+        
+        # Install Xvfb if not present
+        if ! command -v Xvfb &>/dev/null; then
+            log "Installing Xvfb for headless operation..."
+            sudo apt-get update
+            sudo apt-get install -y xvfb
+        fi
+        
+        # Start Xvfb virtual display
+        export DISPLAY=:99
+        Xvfb :99 -screen 0 1920x1080x24 &
+        XVFB_PID=$!
+        sleep 2
+        log "Virtual display started on :99 (PID: $XVFB_PID)"
+        
+        # Store PID for cleanup
+        echo $XVFB_PID > /tmp/streamboost_xvfb.pid
+    elif ! pgrep -x "Xorg" >/dev/null && ! pgrep -x "Xwayland" >/dev/null; then
+        log "DISPLAY is set but no X server detected. Attempting to use existing display."
+    else
+        log "X11 session detected. Using existing display: $DISPLAY"
     fi
 }
 
@@ -61,6 +81,20 @@ function cleanup_ports {
     pkill -f "remote-debugging-port" 2>/dev/null || true
     sleep 2
 }
+
+function cleanup_xvfb {
+    if [ -f /tmp/streamboost_xvfb.pid ]; then
+        XVFB_PID=$(cat /tmp/streamboost_xvfb.pid)
+        if kill -0 $XVFB_PID 2>/dev/null; then
+            log "Stopping virtual display (PID: $XVFB_PID)..."
+            kill $XVFB_PID
+        fi
+        rm -f /tmp/streamboost_xvfb.pid
+    fi
+}
+
+# Set up cleanup trap
+trap cleanup_xvfb EXIT
 
 function get_next_port {
     CURRENT_PORT=$((CURRENT_PORT + 1))
@@ -173,9 +207,10 @@ Twitch: ports 9244-9258
 
 ## Requirements
 
-- Ubuntu 22.04+ with Xorg running (needs GUI session)
+- Ubuntu 22.04+ (supports both GUI and headless operation)
 - Sudo privileges for package install
 - Sufficient RAM for multiple browser instances
+- Xvfb automatically installed for headless environments
 
 ## Config
 
