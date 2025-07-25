@@ -28,6 +28,11 @@ class Config:
     YOUTUBE_WINDOWS = 1
     KICK_WINDOWS = 1
     TWITCH_WINDOWS = 1
+    
+    # Platform URLs Configuration
+    YOUTUBE_URL = "https://www.youtube.com/@timmaythetoolman/live"
+    TWITCH_URL = "https://www.twitch.tv/timmaythetoolman"
+    KICK_URL = "https://kick.com/timmaythetoolman"
 
     # Port and Profile Configuration
     BASE_PORT = 9223
@@ -111,11 +116,11 @@ def resource_check() -> Tuple[bool, Dict[str, float]]:
     return is_ok, resources
 
 def get_platform_urls() -> Dict[str, str]:
-    """Generate platform URLs based on target account"""
+    """Generate platform URLs using configured constants"""
     return {
-        'YouTube': f'https://www.youtube.com/@{Config.TARGET_ACCOUNT}/live',
-        'Kick': f'https://www.kick.com/{Config.TARGET_ACCOUNT}',
-        'Twitch': f'https://www.twitch.tv/{Config.TARGET_ACCOUNT}'
+        'YouTube': Config.YOUTUBE_URL,
+        'Kick': Config.KICK_URL,
+        'Twitch': Config.TWITCH_URL
     }
 
 # === BROWSER AUTOMATION ===
@@ -131,7 +136,8 @@ class StreamWindow:
         self.language = random.choice(LANGUAGES)
         self.timezone = random.choice(TIMEZONES)
         self.proxy = pick_proxy()
-        self.browser: Optional[BrowserContext] = None
+        self.browser: Optional[Browser] = None
+        self.context: Optional[BrowserContext] = None
         self.page: Optional[Page] = None
         self.is_running = False
 
@@ -238,8 +244,33 @@ class StreamWindow:
             }
             if self.proxy:
                 context_options['proxy'] = {'server': self.proxy}
-            self.browser = await playwright.chromium.launch_persistent_context(**context_options)
-            self.page = await self.browser.new_page()
+            
+            # Use ephemeral browser contexts instead of persistent
+            self.browser = await playwright.chromium.launch(headless=Config.HEADLESS)
+            if self.browser is None:
+                raise RuntimeError("Failed to launch browser")
+            
+            # Create new context with options
+            self.context = await self.browser.new_context(**{
+                'locale': self.language,
+                'timezone_id': self.timezone,
+                'viewport': {'width': win_width, 'height': win_height},
+                'device_scale_factor': device_scale,
+                'user_agent': self.user_agent,
+                **(context_options if 'proxy' in context_options else {})
+            })
+            
+            # Validate context creation
+            if self.context is None:
+                raise RuntimeError("Failed to initialize browser context")
+            
+            # Add initialization script to context
+            await self.context.add_init_script("console.log('Context initialized');")
+            
+            self.page = await self.context.new_page()
+            if self.page is None:
+                raise RuntimeError("Failed to create page from context")
+                
             stealth_instance = Stealth()
             await stealth_instance.apply_stealth_async(self.page)
             # --- Advanced Fingerprint Spoofing ---
@@ -268,7 +299,18 @@ class StreamWindow:
                 ''')
             await spoof_all(self.page)
             await self.page.set_extra_http_headers({'User-Agent': self.user_agent})
-            await self.page.goto(self.url, wait_until='domcontentloaded', timeout=30000)
+            
+            # Navigate to URL with health check
+            response = await self.page.goto(self.url, wait_until='domcontentloaded', timeout=30000)
+            if response is None or not response.ok:
+                status = response.status if response else "No response"
+                raise RuntimeError(f"Failed to load page: {self.url} - Status: {status}")
+            
+            # Verify page loaded successfully
+            title = await self.page.title()
+            if not title:
+                raise RuntimeError(f"Page loaded but has no title: {self.url}")
+            
             await self.human_emulation()
             self.is_running = True
             logger.info(f"✓ {self.platform} window launched - Port: {self.port} | Profile: {self.profile_dir.name}")
@@ -317,7 +359,9 @@ class StreamWindow:
     async def health_check(self) -> bool:
         """Check if window is still functional"""
         try:
-            if not self.browser or self.browser.is_closed():
+            if not self.browser or not self.browser.is_connected():
+                return False
+            if not self.context or self.context.is_closed():
                 return False
             if not self.page or self.page.is_closed():
                 return False
@@ -330,7 +374,9 @@ class StreamWindow:
     async def close(self):
         """Gracefully close browser instance"""
         try:
-            if self.browser and not self.browser.is_closed():
+            if self.context and not self.context.is_closed():
+                await self.context.close()
+            if self.browser and self.browser.is_connected():
                 await self.browser.close()
             self.is_running = False
             logger.info(f"✓ {self.platform} window closed - Port: {self.port}")
@@ -465,12 +511,16 @@ class StreamBoostController:
                 logger.info("📦 Installing Chromium browser...")
                 os.system('playwright install chromium')
 
-            # Deploy all platforms concurrently
-            deploy_tasks = []
-            for manager in self.platforms:
-                deploy_tasks.append(manager.deploy(playwright))
-
-            await asyncio.gather(*deploy_tasks)
+            # Deploy platforms with throttling (sequential with delays)
+            for i, manager in enumerate(self.platforms):
+                logger.info(f"🚀 Deploying platform {i+1}/{len(self.platforms)}: {manager.platform}")
+                await manager.deploy(playwright)
+                
+                # Add delay between platform deployments (except for last one)
+                if i < len(self.platforms) - 1:
+                    delay = random.uniform(0.2, 0.5)
+                    logger.info(f"⏳ Platform deployment throttling: {delay:.1f}s")
+                    await asyncio.sleep(delay)
 
             # Start monitoring tasks
             self.is_running = True
