@@ -9,7 +9,11 @@ echo "╚═══════════════════════�
 python_version=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
 echo "🐍 Python version: $python_version"
 
-if [ "$(echo "$python_version >= 3.8" | bc)" -eq 0 ]; then
+# Simple version check without bc dependency
+major=$(python3 -c "import sys; print(sys.version_info.major)")
+minor=$(python3 -c "import sys; print(sys.version_info.minor)")
+
+if [ "$major" -lt 3 ] || ([ "$major" -eq 3 ] && [ "$minor" -lt 8 ]); then
     echo "❌ Python 3.8+ is required"
     exit 1
 fi

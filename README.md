@@ -1,6 +1,44 @@
-# -Titan-headless
+# 🚀 Titan Headless - Single-Click Stream Boost Suite
 
-StreamBoost: Nexus Edition - A tool to boost your stream numbers across multiple platforms.
+**Ubuntu 22.04+ Optimized | True Single-Click Deployment**
+
+StreamBoost: Nexus Edition + Enhanced YouTube Watcher - Automated stream boosting with **zero manual configuration**.
+
+## ⚡ Single-Click Deployment (NEW!)
+
+**Deploy everything with one command:**
+```bash
+./deploy_master.sh --auto
+```
+
+**Or use interactive menu:**
+```bash
+./deploy_master.sh
+```
+
+✅ **Automatic virtual environment creation**  
+✅ **System dependency installation**  
+✅ **Browser setup & configuration**  
+✅ **Ubuntu 22.04+ optimization**  
+✅ **Zero manual steps required**
+
+📖 **[Complete Deployment Guide](./DEPLOYMENT_GUIDE.md)**
+
+---
+
+## 🎯 Two Powerful Tools
+
+### 1. **StreamBoost** - Multi-Platform Stream Boosting
+- YouTube, Kick, and Twitch simultaneously
+- Advanced browser automation with Playwright
+- Resource management and self-healing
+- Human emulation and stealth features
+
+### 2. **YouTube Watcher** - Enhanced Channel View Simulation  
+- Intelligent video selection and duration checking
+- Performance monitoring and statistics
+- Video engagement simulation
+- Cookie & session management
 
 ## Implementations
 
