@@ -1,0 +1,160 @@
+# Enhanced Nexus Maximus Configuration v3.0 - JARVIS Protocol
+streaming:
+  youtube:
+    url: "https://www.youtube.com/@timmaythetoolman/live"
+    channel: "timmaythetoolman"
+    count: 25
+    enabled: true
+  twitch:
+    url: "https://www.twitch.tv/timmaythetoolman"
+    channel: "timmaythetoolman"
+    count: 20
+    enabled: true
+  kick:
+    url: "https://kick.com/timmaythetoolman"
+    channel: "timmaythetoolman"
+    count: 15
+    enabled: true
+
+# Enhanced Proxy Configuration
+proxy:
+  file: "proxies.txt"
+  enabled: true
+  rotation_interval: 180  # 3 minutes (reduced for better stealth)
+  health_check_interval: 300
+  geo_filtering:
+    enabled: true
+    countries: ["US", "CA", "GB", "DE", "FR", "AU", "SG", "JP"]
+  connection_pool:
+    max_connections_per_proxy: 3
+    connection_timeout: 30
+
+# Enhanced Automation Settings
+automation:
+  headless: true
+  dwell_time:
+    min: 300   # 5 minutes minimum
+    max: 2400  # 40 minutes maximum
+  browsers: ["chromium"]
+  
+# Advanced Behavior Simulation
+behavior:
+  human_simulation: true
+  mouse_movements: true
+  scroll_simulation: true
+  click_simulation: true
+  engagement_simulation: true
+  video_interactions: true
+  heartbeat:
+    enabled: true
+    interval_min: 20
+    interval_max: 90
+
+# Enhanced Stealth Features
+advanced:
+  ai_chat:
+    enabled: false
+    provider: "none"
+    api_key: ""
+  captcha:
+    enabled: false
+    provider: "none"
+    api_key: ""
+  stealth:
+    user_agent_rotation: true
+    fingerprint_randomization: true
+    canvas_fingerprinting: true
+    webgl_fingerprinting: true
+    audio_fingerprinting: true
+  failover:
+    enabled: true
+    max_retries: 3
+    retry_delay: 10
+
+# Platform API Integration
+platform_apis:
+  youtube:
+    enabled: false
+    api_key: ""
+    client_id: ""
+    client_secret: ""
+  twitch:
+    enabled: false
+    client_id: ""
+    access_token: ""
+  kick:
+    enabled: true  # Public API available
+
+# Enhanced System Configuration
+system:
+  resource_monitoring: true
+  cpu_threshold: 80
+  memory_threshold: 80
+  max_concurrent_windows: 60
+  cleanup_interval: 600  # 10 minutes
+  analytics_interval: 300  # 5 minutes
+
+# Cross-platform Coordination
+coordination:
+  enabled: true
+  base_viewers: 50
+  sync_interval: 30
+  engagement_coordination: true
+  viewer_ratio_balancing: true
+
+# Verification and Monitoring
+verification:
+  enabled: true
+  interval: 120  # 2 minutes
+  registration_threshold: 0.7  # 70% minimum registration rate
+  alerting:
+    enabled: true
+    webhook_url: ""
+    
+# Analytics and Reporting
+analytics:
+  enabled: true
+  dashboard_export: true
+  export_format: "html"
+  retention_days: 30
+  real_time_sync: true
+
+# Session Persistence
+session:
+  persistence_enabled: true
+  session_duration_max: 3600  # 1 hour max session
+  fingerprint_rotation: true
+  history_tracking: true
+
+# Enhanced Watch Duration Patterns
+watch_patterns:
+  live_stream:
+    min: 300
+    max: 3600
+    avg: 1200
+    engagement_modifier: true
+  vod:
+    min: 180
+    max: 2400
+    avg: 900
+    engagement_modifier: true
+  short_content:
+    min: 30
+    max: 300
+    avg: 120
+    engagement_modifier: false
+
+# Engagement Simulation Patterns
+engagement:
+  high_engagement:
+    like_probability: 0.15
+    comment_probability: 0.05
+    share_probability: 0.02
+  medium_engagement:
+    like_probability: 0.08
+    comment_probability: 0.02
+    share_probability: 0.01
+  low_engagement:
+    like_probability: 0.03
+    comment_probability: 0.005
+    share_probability: 0.002
