@@ -1,0 +1,58 @@
+# Nexus Maximus Configuration v2.0
+streaming:
+  youtube:
+    url: "https://www.youtube.com/@timmaythetoolman/live"
+    count: 15
+    enabled: true
+  twitch:
+    url: "https://www.twitch.tv/timmaythetoolman"
+    count: 15
+    enabled: true
+  kick:
+    url: "https://kick.com/timmaythetoolman"
+    count: 15
+    enabled: true
+
+proxy:
+  file: "proxies.txt"
+  enabled: true
+  rotation_interval: 300
+  geo_filtering:
+    enabled: false
+    countries: ["US", "CA", "GB", "DE", "FR", "AU", "SG"]
+
+automation:
+  headless: true
+  dwell_time:
+    min: 180
+    max: 1200
+  browsers: ["chromium", "firefox"]
+  
+behavior:
+  human_simulation: true
+  mouse_movements: true
+  scroll_simulation: true
+  click_simulation: true
+  heartbeat:
+    enabled: true
+    interval_min: 30
+    interval_max: 120
+
+advanced:
+  ai_chat:
+    enabled: false
+    provider: "none"  # "openai" or "none"
+    api_key: ""
+  captcha:
+    enabled: false
+    provider: "none"  # "anticaptcha" or "none"
+    api_key: ""
+  stealth:
+    user_agent_rotation: true
+    fingerprint_randomization: true
+    
+system:
+  resource_monitoring: true
+  cpu_threshold: 85
+  memory_threshold: 85
+  max_concurrent_windows: 50
