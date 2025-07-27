@@ -1,0 +1,144 @@
+advanced:
+  ai_chat:
+    api_key: ''
+    enabled: false
+    provider: none
+  captcha:
+    api_key: ''
+    enabled: false
+    provider: none
+  failover:
+    enabled: true
+    max_retries: 3
+    retry_delay: 10
+  stealth:
+    audio_fingerprinting: true
+    canvas_fingerprinting: true
+    fingerprint_randomization: true
+    user_agent_rotation: true
+    webgl_fingerprinting: true
+analytics:
+  dashboard_export: true
+  enabled: true
+  export_format: html
+  real_time_sync: true
+  retention_days: 30
+automation:
+  browsers:
+  - chromium
+  dwell_time:
+    max: 2400
+    min: 300
+  headless: true
+behavior:
+  click_simulation: true
+  engagement_simulation: true
+  heartbeat:
+    enabled: true
+    interval_max: 90
+    interval_min: 20
+  human_simulation: true
+  mouse_movements: true
+  scroll_simulation: true
+  video_interactions: true
+coordination:
+  base_viewers: 50
+  enabled: true
+  engagement_coordination: true
+  sync_interval: 30
+  viewer_ratio_balancing: true
+engagement:
+  high_engagement:
+    comment_probability: 0.05
+    like_probability: 0.15
+    share_probability: 0.02
+  low_engagement:
+    comment_probability: 0.005
+    like_probability: 0.03
+    share_probability: 0.002
+  medium_engagement:
+    comment_probability: 0.02
+    like_probability: 0.08
+    share_probability: 0.01
+platform_apis:
+  kick:
+    enabled: true
+  twitch:
+    access_token: ''
+    client_id: ''
+    enabled: false
+  youtube:
+    api_key: ''
+    client_id: ''
+    client_secret: ''
+    enabled: false
+proxy:
+  connection_pool:
+    connection_timeout: 30
+    max_connections_per_proxy: 3
+  enabled: true
+  file: proxies.txt
+  geo_filtering:
+    countries:
+    - US
+    - CA
+    - GB
+    - DE
+    - FR
+    - AU
+    - SG
+    - JP
+    enabled: true
+  health_check_interval: 300
+  rotation_interval: 180
+session:
+  fingerprint_rotation: true
+  history_tracking: true
+  persistence_enabled: true
+  session_duration_max: 3600
+streaming:
+  kick:
+    channel: timmaythetoolman
+    count: 15
+    enabled: true
+    url: https://kick.com/timmaythetoolman
+  twitch:
+    channel: timmaythetoolman
+    count: 20
+    enabled: true
+    url: https://www.twitch.tv/timmaythetoolman
+  youtube:
+    channel: timmaythetoolman
+    count: 25
+    enabled: true
+    url: https://www.youtube.com/@timmaythetoolman/live
+system:
+  analytics_interval: 300
+  cleanup_interval: 600
+  cpu_threshold: 80
+  max_concurrent_windows: 60
+  memory_threshold: 80
+  resource_monitoring: true
+verification:
+  alerting:
+    enabled: true
+    webhook_url: ''
+  enabled: true
+  interval: 120
+  registration_threshold: 0.7
+watch_patterns:
+  live_stream:
+    avg: 1200
+    engagement_modifier: true
+    max: 3600
+    min: 300
+  short_content:
+    avg: 120
+    engagement_modifier: false
+    max: 300
+    min: 30
+  vod:
+    avg: 900
+    engagement_modifier: true
+    max: 2400
+    min: 180
