@@ -60,6 +60,16 @@ pip install undetected-chromedriver || echo "  ⚠️  undetected-chromedriver n
 pip install anticaptchaofficial || echo "  ⚠️  anticaptcha not available"
 pip install openai || echo "  ⚠️  OpenAI not available"
 
+echo "[+] Installing Flite shared libraries and comprehensive browser dependencies..."
+if [ -f "./install_flite_browsers.sh" ]; then
+    echo "  → Running comprehensive Flite and browser dependency installer..."
+    bash ./install_flite_browsers.sh --skip-playwright || echo "  ⚠️  Flite installer had issues but continuing..."
+else
+    echo "  ⚠️  Flite installer script not found, using fallback method..."
+    # Install libflite1 as fallback
+    sudo apt-get install -y libflite1 || echo "  ⚠️  libflite1 not available"
+fi
+
 echo "[+] Installing Playwright browsers..."
 python3 -m playwright install chromium firefox webkit
 
