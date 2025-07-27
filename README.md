@@ -77,6 +77,7 @@ This repository contains multiple implementations:
 1. **Python Version** (`streamboost.py`) - Advanced browser automation with Playwright
 2. **Shell Version** (`streamboost.sh`) - Original bash script for Ubuntu 22.04+
 3. **🆕 Enhanced Channel Watch Monolith** - Optimized YouTube channel view simulation
+4. **🆕 Node.js Version** (`stream_boost/`) - Enhanced 16-module stream viewer emulation with Puppeteer
 
 ## 🚀 Enhanced Channel Watch Monolith (NEW)
 
@@ -119,6 +120,44 @@ ram_threshold: 85
 ```
 
 📖 **[Read Full Enhanced Documentation](./ENHANCED_DOCS.md)**
+
+---
+
+## 🚀 Node.js Implementation (NEW)
+
+### Enhanced 16-Module Stream Viewer Emulation
+
+A comprehensive Node.js + Puppeteer implementation featuring advanced stealth detection evasion and realistic human behavior simulation.
+
+### Key Features
+
+- **16 Advanced Modules**: Complete viewer emulation from proxy setup to watch history simulation
+- **Historical Browsing**: Pre-stream channel browsing to establish realistic user profiles
+- **Advanced Stealth**: Hardware fingerprinting, bandwidth simulation, anti-detection layers
+- **Human Emulation**: Realistic mouse movements, scrolling, engagement actions
+- **Proxy Integration**: Built-in proxy rotation and anonymization
+
+### Quick Start (Node.js Version)
+```bash
+# Navigate to stream_boost directory
+cd stream_boost
+
+# Test the implementation
+npm test
+
+# Run stream viewer emulation
+npm start
+```
+
+### Configuration
+Edit `stream_boost/stream_boost.js`:
+```javascript
+const STREAM_URL = "https://www.youtube.com/watch?v=YOUR_STREAM_ID";
+const VIEWER_COUNT = 50;
+const SESSION_DURATION = 300000; // 5 minutes
+```
+
+📖 **[Read Node.js Implementation Guide](./stream_boost/README.md)**
 
 ---
 

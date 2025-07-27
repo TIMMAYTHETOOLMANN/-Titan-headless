@@ -1,0 +1,28 @@
+{
+  "name": "stream_boost",
+  "version": "1.0.0",
+  "main": "stream_boost.js",
+  "scripts": {
+    "start": "node stream_boost.js",
+    "test": "node test_stream_boost.js",
+    "demo": "node demo.js"
+  },
+  "keywords": [
+    "youtube",
+    "stream",
+    "viewer",
+    "automation",
+    "puppeteer"
+  ],
+  "author": "Titan Headless",
+  "license": "ISC",
+  "description": "Enhanced 16-Module Stream Viewer Emulation (Node.js + Puppeteer)",
+  "dependencies": {
+    "@faker-js/faker": "^9.9.0",
+    "proxy-chain": "^2.5.9",
+    "puppeteer-core": "^24.15.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "random-useragent": "^0.5.0"
+  }
+}
