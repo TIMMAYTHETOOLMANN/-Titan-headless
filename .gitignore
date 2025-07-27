@@ -88,3 +88,11 @@ temp/
 *.gif
 *.mp4
 *.avi
+
+# Nexus Maximus specific
+.nexusvenv/
+nexus_profiles/
+proxy_sources/
+*.log
+nexus_config_local.yaml
+nexus_config_test.yaml
