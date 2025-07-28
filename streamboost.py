@@ -1,3 +1,10 @@
+
+# === AUTO-INTEGRATED VIEWER EMULATION MODULES ===
+from viewer_emulation import (
+    ViewerBehavior, GeoIPRotator, BandwidthSimulator, HumanInteraction,
+    DeviceEmulator, EngagementAI, FeatureUtilizer, ViewerCluster,
+    BufferingSimulator, FingerprintRandomizer
+)
 #!/usr/bin/env python3
 """
 StreamBoost: Nexus Edition - Multi-Port Titan (Python Implementation)
@@ -594,3 +601,18 @@ if __name__ == "__main__":
         asyncio.run(main())
     except Exception as e:
         logger.error(f"Startup failed: {str(e)}")
+
+# === VIEWER EMULATION DEMO FUNCTION ===
+def run_viewer_emulation_demo():
+    """Demo function to test all viewer emulation modules"""
+    print("\n[Viewer Emulation Demo]")
+    ViewerBehavior().simulate_actions(duration=3)
+    GeoIPRotator().rotate_proxy()
+    BandwidthSimulator().simulate_bandwidth()
+    HumanInteraction().simulate_engagement()
+    DeviceEmulator().get_user_agent()
+    EngagementAI().decide_watch_time(video_length=300)
+    FeatureUtilizer().utilize_features()
+    ViewerCluster().simulate_cluster(viewers=5)
+    BufferingSimulator().simulate_buffering()
+    FingerprintRandomizer().randomize_fingerprint()
