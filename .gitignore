@@ -95,4 +95,5 @@ nexus_profiles/
 proxy_sources/
 *.log
 nexus_config_local.yaml
-nexus_config_test.yaml
+nexus_config_test.yaml__pycache__/
+*.pyc
