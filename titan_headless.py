@@ -13,7 +13,7 @@ Titan Headless: All-Platform Viewer/Engagement Bot
 import asyncio, random, string, time, aiohttp, os, yaml, json, sys, traceback
 from pathlib import Path
 from playwright.async_api import async_playwright
-from playwright_stealth.async_api import stealth_async
+from playwright_stealth import stealth
 import ssl, certifi
 
 try:
@@ -114,7 +114,7 @@ async def generate_chat_response(history, platform="twitch"):
 
 # === Stealth Setup ===
 async def stealthify(page):
-    await stealth_async(page)
+    await stealth(page)
 
 # === Platform Logic: Twitch ===
 async def twitch_viewer(slot, proxy, config):
